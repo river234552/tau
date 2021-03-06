@@ -242,29 +242,7 @@ def tau(args, features, gpus):
             gxs.append(gx) #gaps
 
     #Our tau
-    number_of_clusters = 30
-    thresh = 0.01
-    tw = weibull.weibull()
-    data = torch.Tensor(gxs)
-    fullrange = torch.linspace(0, 1, 100)
-    tailj = torch.linspace(.45, .55, 10)
-    torch.Tensor.ndim = property(lambda self: len(self.shape))
-
-    tw.FitHigh(data.view(1, -1), int(1. * len(data)))
-
-    parms = tw.return_all_parameters()
-    print(parms)
-    pcent = 1 - 1 / len(data)
-    pcent = 0.99
-
-    print("EVT Tau for ", pcent * 100, " Percentile at ",
-          parms['Scale'] * np.power(np.log(1 / (1 - pcent)), (1 / parms['Shape'])) - 1 + parms['smallScoreTensor'])
-    # wscoresj = tw.wscore(tailj)
-    # print("Ijbb Wscores=",tailj,wscoresj)
-
-    wscoresj = tw.wscore(fullrange)
-    tau_T = parms['Scale'] * np.power(np.log(1 / (1 - pcent)), (1 / parms['Shape'])) - 1 + parms['smallScoreTensor']
-    tau_T = tau_T.numpy()[0][0]
+    tau = get_tau(torch.Tensor(gxs), 1, tailfrac=.97, pcent=.999)
 
 
 
